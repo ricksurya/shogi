@@ -1,14 +1,23 @@
+package BoardFiles;
+
+import Pieces.*;
+
+import java.util.HashSet;
+
 /**
  * Class to represent Box Shogi board
  */
 public class Board {
 
     Piece[][] board;
-
-    final int BOARD_SIZE = 5;
+    final static int BOARD_SIZE = 5;
+    private int _turn;
+    HashSet<Piece> capturedP0;
+    HashSet<Piece> capturedP1;
 
     public Board() {
-    	//TODO initialize variable board here
+        board = new Piece[BOARD_SIZE][BOARD_SIZE];
+        _turn = 0;
     }
 
     /* Print board */
@@ -23,9 +32,39 @@ public class Board {
         return stringifyBoard(pieces);
     }
 
-    private boolean isOccupied(int col, int row) {
+    public void makeMove(Square from, Square to) {
+        if (isOccupied(to)) {
+            if (_turn == 0) {
+                capturedP0.add(getPieceAt(to));
+            } else {
+                capturedP1.add(getPieceAt(to));
+            }
+            getPieceAt(to).changePlayer();
+            removePieceAt(to);
+        }
+        Piece piece = getPieceAt(from);
+        board[to.col()][to.row()] = piece;
+        removePieceAt(from);
+        piece.updatePosition(to);
+        _turn = (_turn + 1) % 2;
+    }
+
+    private boolean isOccupied(Square sq) {
+        return getPieceAt(sq) != null;
+    }
+
+    private boolean isOccupied(int row, int col) {
         return board[col][row] != null;
     }
+
+    public Piece getPieceAt(Square sq) {
+        return board[sq.col()][sq.row()];
+    }
+
+    private void removePieceAt(Square sq) {
+        board[sq.col()][sq.row()] = null;
+    }
+
 
     private String stringifyBoard(String[][] board) {
         String str = "";
@@ -54,7 +93,7 @@ public class Board {
                 return sq + "|";
         }
 
-        throw new IllegalArgumentException("Board must be an array of strings like \"\", \"P\", or \"+P\"");
+        throw new IllegalArgumentException("Board.Board must be an array of strings like \"\", \"P\", or \"+P\"");
     }
 }
 

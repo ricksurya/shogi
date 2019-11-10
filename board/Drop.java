@@ -2,6 +2,10 @@ package board;
 
 import pieces.Piece;
 
+/**
+ * Class to represent a drop move.
+ * @author ricksurya
+ */
 public class Drop extends Move {
 
     private Piece piece;

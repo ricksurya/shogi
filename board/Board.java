@@ -9,6 +9,7 @@ import java.util.Map;
 
 /**
  * Class to represent Box Shogi board
+ * @author ricksurya
  */
 public class Board {
 
@@ -35,8 +36,8 @@ public class Board {
 
     /**
      * Checks if the given move is valid. A move is valid if: it is not in the same position, it is not moving a NULL
-     * piece, the piece is currPlayer's, it is not capturing currPlayer's piece, the promotion is valid, and the move
-     * does not cause currPlayer to be in a check position.
+     * piece, the piece is currPlayer's, it is not capturing currPlayer's piece, the promotion is valid, it is a legal
+     * piece move, and the move does not cause currPlayer to be in a check position.
      * @param move : move to be checked
      * @param currPlayer : the moving player
      * @param promote : whether the move is promoting the piece
@@ -47,7 +48,7 @@ public class Board {
         Square from = move.getFrom();
         Piece p = getPieceAt(from);
         if (from == to || p == null || p.getPlayer() != currPlayer ||
-                getPieceAt(to).getPlayer() == currPlayer) {
+                getPieceAt(to).getPlayer() == currPlayer || !p.isLegalPieceMove(move, this)) {
             return false;
         }
 

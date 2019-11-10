@@ -1,7 +1,7 @@
 package board;
 
 /** A move in the game of Shogi
- *  @author Rick Surya
+ *  @author ricksurya
  */
 public class Move {
 

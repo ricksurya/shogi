@@ -67,7 +67,7 @@ final public class Square {
 
     /** Return the (unique) Square denoting the position COL ROW, where
      *  COL ROW is the standard text format for a square (e.g., a4). */
-    static Square sq(String col, String row) {
+    public static Square sq(String col, String row) {
         int c = col.charAt(0) - 'a';
         int r = Integer.parseInt(row) - 1;
         return sq(c, r);
@@ -76,7 +76,7 @@ final public class Square {
     /** Return the (unique) Square denoting the position in POSN, in the
      *  standard text format for a square (e.g. a4). POSN must be a
      *  valid square designation. */
-    static Square sq(String posn) {
+    public static Square sq(String posn) {
         return sq(posn.substring(0, 1), posn.substring(1));
     }
 

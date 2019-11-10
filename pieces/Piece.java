@@ -106,6 +106,10 @@ public abstract class Piece {
         return promoted;
     }
 
+    public PieceType getType() {
+        return type;
+    }
+
     public final String toString() {
         String res = "";
         if (promoted) {

@@ -31,6 +31,20 @@ public class Player {
         currPieces.add(p);
     }
 
+    public Piece getCapturedPiece(String symbol) {
+        for (Piece piece : capturedPieces) {
+            if (piece.getType().toString().equals(symbol)) {
+                return piece;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public String toString() {
+        return _playerType.toString();
+    }
+
     public void removeCurrPiece(Piece p) {
         currPieces.remove(p);
     }

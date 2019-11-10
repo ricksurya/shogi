@@ -29,7 +29,6 @@ public class Controller {
         moveCount = 0;
         TestCase testCase = parseTestCase(testCasePath);
         initBoard(testCase.initialPieces, testCase.upperCaptures, testCase.lowerCaptures);
-        play(testCase.moves);
     }
 
     public Controller(Reporter reporter) throws Exception {
@@ -40,7 +39,6 @@ public class Controller {
         moveCount = 0;
         TestCase testCase = parseTestCase(defaultPath);
         initBoard(testCase.initialPieces, testCase.upperCaptures, testCase.lowerCaptures);
-        play();
     }
 
     private void initBoard(List<InitialPosition> initialPositions, List<String> upperCaptures,

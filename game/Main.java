@@ -1,5 +1,7 @@
 package game;
 
+import static game.Utils.*;
+
 /**
  * Class to be run from the terminal for a game of Minishogi.
  * @author ricksurya
@@ -10,17 +12,21 @@ public class Main {
      * @param args : arguments from terminal
      */
     public static void main(String[] args) {
-//        try {
-//            if (args[0].equals(IM_FLAG)) {
-//                runInteractionMode();
-//            }
-//            else if (args[0].equals(FM_FLAG)) {
-//                runFileMode(args[1]);
-//            }
-//            else {
-//                System.out.println(ILLEGAL_ARG_MSG);
-//            }
-//        } catch(Exception e) {
-//            System.out.println(ERROR_MSG);
+        try {
+            if (args[0].equals("-i")) {
+                Reporter reporter = new Reporter();
+                Controller controller = new Controller(reporter);
+                controller.play();
+            } else if (args[0].equals("-f")) {
+                Reporter reporter = new Reporter();
+                Controller controller = new Controller(reporter, args[1]);
+                TestCase testCase = parseTestCase(args[1]);
+                controller.play(testCase.moves);
+            } else {
+                System.out.println("Illegal argument");
+            }
+        } catch (Exception e) {
+            System.out.println("ERROR");
+        }
     }
 }

@@ -1,8 +1,10 @@
-package BoardFiles;
+package board;
 
-import Pieces.*;
+import game.Player;
+import pieces.*;
 
-import java.util.HashSet;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Class to represent Box Shogi board
@@ -11,13 +13,11 @@ public class Board {
 
     Piece[][] board;
     final static int BOARD_SIZE = 5;
-    private int _turn;
-    HashSet<Piece> capturedP0;
-    HashSet<Piece> capturedP1;
+    private Map<Player, Square> driver_positions;
 
     public Board() {
         board = new Piece[BOARD_SIZE][BOARD_SIZE];
-        _turn = 0;
+        driver_positions = new HashMap<>();
     }
 
     /* Print board */
@@ -32,21 +32,38 @@ public class Board {
         return stringifyBoard(pieces);
     }
 
-    public void makeMove(Square from, Square to) {
+    public boolean isValidMove(Move move, Player currPlayer, boolean promote) {
+        Square to = move.getTo();
+        Square from = move.getFrom();
+        if (from == to || getPieceAt(from) == null || getPieceAt(from).getPlayer() != currPlayer ||
+                getPieceAt(to).getPlayer() == currPlayer) {
+            return false;
+        }
+
+        if (promote && !getPieceAt(from).isValidPromote(to)) {
+            return false;
+        }
+        return true;
+    }
+
+    public void makeMove(Move move, Player currPlayer) {
+        Square to = move.getTo();
+        Square from = move.getFrom();
+
         if (isOccupied(to)) {
-            if (_turn == 0) {
-                capturedP0.add(getPieceAt(to));
-            } else {
-                capturedP1.add(getPieceAt(to));
-            }
-            getPieceAt(to).changePlayer();
+            getPieceAt(to).capture(currPlayer);
             removePieceAt(to);
         }
+
         Piece piece = getPieceAt(from);
         board[to.col()][to.row()] = piece;
         removePieceAt(from);
         piece.updatePosition(to);
         _turn = (_turn + 1) % 2;
+    }
+
+    private void updateDriverPosition(Piece driver, Square to) {
+        driver_positions.put(driver.getPlayer(), to);
     }
 
     private boolean isOccupied(Square sq) {
@@ -81,6 +98,10 @@ public class Board {
         str += "    a  b  c  d  e" + System.getProperty("line.separator");
 
         return str;
+    }
+
+    public static int getBoardSize() {
+        return BOARD_SIZE;
     }
 
     private String stringifySquare(String sq) {

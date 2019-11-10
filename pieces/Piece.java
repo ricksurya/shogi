@@ -1,0 +1,102 @@
+package pieces;
+
+import board.*;
+import game.Player;
+
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
+import static board.Direction.*;
+import static game.PlayerType.LOWER;
+import static game.PlayerType.UPPER;
+
+public class Piece {
+
+    private Player owner;
+    private PieceType type;
+    private boolean promoted;
+    private final int PIECE_RANGE = Board.getBoardSize();
+    private static Set<Direction> PIECE_DIR = new HashSet<>(Arrays.asList(UP, UPRIGHT, RIGHT, DOWNRIGHT, DOWN,
+            DOWNLEFT, LEFT, UPLEFT));
+
+    public Piece(Square sq, Player player, PieceType type) {
+        this.owner = player;
+        this.type = type;
+        promoted = false;
+    }
+
+    public boolean isLegalMove(Move move, Board board) {
+        if (move.getFrom() == move.getTo()) {
+            return false;
+        }
+        if (board.getPieceAt(move.getTo()).getPlayer() == owner) {
+            return false;
+        }
+        return isLegalPieceMove(move);
+    }
+
+    private boolean isLegalPieceMove(Move move) {
+        Direction moveDir = move.getFrom().direction(move.getTo());
+        int dx = Math.abs(move.getTo().col() - move.getFrom().col());
+        int dy = Math.abs(move.getTo().row() - move.getFrom().row());
+        if (PIECE_DIR.contains(moveDir) && dx < PIECE_RANGE && dy < PIECE_RANGE) {
+            return true;
+        }
+        return false;
+    }
+
+    public final void capture(Player p) {
+        owner = p;
+        if (promoted) {
+            demote();
+        }
+    }
+
+    public Set<Move> getValidMoves(Square from, Board board) {
+        Set<Move> validMoves = new HashSet<>();
+        for (int i = 1; i <= PIECE_RANGE; i++) {
+            for (Direction dir : PIECE_DIR) {
+                int newRow = from.row()+ i * dir.getDy();
+                int newCol = from.col()+ i * dir.getDx();
+                if (Square.exists(newCol, newRow) && board.getPieceAt(Square.sq(newCol, newRow)).getPlayer() != owner) {
+                    validMoves.add(new Move(from, Square.sq(newCol, newRow)));
+                }
+            }
+        }
+        return validMoves;
+    }
+
+    public void promote() {
+        promoted = true;
+    }
+
+    public boolean isValidPromote(Square to) {
+        if (!promoted && ((to.row() == Board.getBoardSize() - 1 && owner.getPlayerType() == LOWER) ||
+                (to.row() == 0 && owner.getPlayerType() == UPPER))) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isValidDrop(Square to, Board board) {
+        return board.getPieceAt(to) == null;
+    }
+
+    public void demote() {
+        promoted = false;
+    }
+
+    public final Player getPlayer() {
+        return owner;
+    }
+
+    public final String toString() {
+        String res = "";
+        if (promoted) {
+            res += "+";
+        }
+        res += type.toString();
+        return (owner.getPlayerType() == UPPER) ? res.toUpperCase() : res;
+    }
+}

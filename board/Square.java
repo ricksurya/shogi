@@ -1,32 +1,31 @@
-package BoardFiles;
+package board;
+
+import static board.Direction.*;
 
 final public class Square {
     /** Return my row position, where 0 is the bottom row. */
-    int row() {
+    public int row() {
         return _row;
     }
 
     /** Return my column position, where 0 is the leftmost column. */
-    int col() {
+    public int col() {
         return _col;
     }
 
     /** Return my index position (0-99).  0 represents square a1, and 99
      *  is square j10. */
-    int index() {
+    public int index() {
         return _index;
     }
 
     /** All possible directions. */
-    private static final int[][] DIR = {
-            { 0, 1 }, { 1, 1 }, { 1, 0 }, { 1, -1 },
-            { 0, -1 }, { -1, -1 }, { -1, 0 }, { -1, 1 }
-    };
+    private static final Direction[] DIR = {UP, UPRIGHT, RIGHT, DOWNRIGHT, DOWN, DOWNLEFT, LEFT, UPLEFT};
 
 
     /** Return the direction (an int as defined in the documentation
      *  for queenMove) of the queen move THIS-TO. */
-    int[] direction(Square to) {
+    public Direction direction(Square to) {
         int dx = to.col() - col();
         int dy = to.row() - row();
         if (dx == 0) {
@@ -58,12 +57,12 @@ final public class Square {
     }
 
     /** Return true iff COL ROW is a legal square. */
-    static boolean exists(int col, int row) {
+    public static boolean exists(int col, int row) {
         return row >= 0 && col >= 0 && row < Board.BOARD_SIZE && col < Board.BOARD_SIZE;
     }
 
     /** Return the (unique) Square denoting COL ROW. */
-    static Square sq(int col, int row) {
+    public static Square sq(int col, int row) {
         if (!exists(row, col)) {
             throw new IllegalArgumentException("Row or column out of bounds");
         }

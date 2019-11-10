@@ -19,11 +19,17 @@ public class Piece {
     private final int PIECE_RANGE = Board.getBoardSize();
     private static Set<Direction> PIECE_DIR = new HashSet<>(Arrays.asList(UP, UPRIGHT, RIGHT, DOWNRIGHT, DOWN,
             DOWNLEFT, LEFT, UPLEFT));
+    private Square location;
 
     public Piece(Square sq, Player player, PieceType type) {
-        this.owner = player;
+        owner = player;
         this.type = type;
         promoted = false;
+        location = sq;
+    }
+
+    public void updateLocation(Square to) {
+        location = to;
     }
 
     public boolean isLegalMove(Move move, Board board) {
@@ -53,7 +59,7 @@ public class Piece {
         }
     }
 
-    public Set<Move> getValidMoves(Square from, Board board) {
+    public Set<Move> getLegalMoves(Square from, Board board) {
         Set<Move> validMoves = new HashSet<>();
         for (int i = 1; i <= PIECE_RANGE; i++) {
             for (Direction dir : PIECE_DIR) {
@@ -71,16 +77,15 @@ public class Piece {
         promoted = true;
     }
 
-    public boolean isValidPromote(Square to) {
-        if (!promoted && ((to.row() == Board.getBoardSize() - 1 && owner.getPlayerType() == LOWER) ||
-                (to.row() == 0 && owner.getPlayerType() == UPPER))) {
+    public boolean isLegalPromote(Square to) {
+        if (!promoted && to.row() == owner.getPromotionRow()) {
             return true;
         }
         return false;
     }
 
-    public boolean isValidDrop(Square to, Board board) {
-        return board.getPieceAt(to) == null;
+    public boolean isLegalDrop(Square to, Board board) {
+        return true;
     }
 
     public void demote() {

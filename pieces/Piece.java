@@ -16,8 +16,8 @@ public abstract class Piece {
     private Player owner;
     private PieceType type;
     private boolean promoted;
-    private static int pieceRange;
-    private static ArrayList<Direction> pieceDir;
+    private int pieceRange;
+    private ArrayList<Direction> pieceDir;
     private Square location;
 
     public Piece(Square sq, Player player, PieceType type, ArrayList<Direction> dirs, int pieceRange) {
@@ -37,7 +37,7 @@ public abstract class Piece {
         Direction moveDir = move.getFrom().direction(move.getTo());
         int dx = Math.abs(move.getTo().col() - move.getFrom().col());
         int dy = Math.abs(move.getTo().row() - move.getFrom().row());
-        if (getPieceDir().contains(moveDir) && dx < getPieceRange() && dy < getPieceRange()) {
+        if (getPieceDir().contains(moveDir) && dx <= getPieceRange() && dy <= getPieceRange()) {
             return true;
         }
         return false;
@@ -94,11 +94,11 @@ public abstract class Piece {
         return location;
     }
 
-    public static ArrayList<Direction> getPieceDir() {
+    public ArrayList<Direction> getPieceDir() {
         return pieceDir;
     }
 
-    public static int getPieceRange() {
+    public int getPieceRange() {
         return pieceRange;
     }
 

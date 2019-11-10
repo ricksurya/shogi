@@ -13,21 +13,17 @@ final public class Square {
         return _col;
     }
 
-    /** Return my index position (0-99).  0 represents square a1, and 99
-     *  is square j10. */
-    public int index() {
-        return _index;
-    }
-
     /** All possible directions. */
     private static final Direction[] DIR = {UP, UPRIGHT, RIGHT, DOWNRIGHT, DOWN, DOWNLEFT, LEFT, UPLEFT};
 
 
-    /** Return the direction (an int as defined in the documentation
-     *  for queenMove) of the queen move THIS-TO. */
+    /** Return the direction as a result of move THIS-TO. If it is not a valid direction, return null. */
     public Direction direction(Square to) {
         int dx = to.col() - col();
         int dy = to.row() - row();
+        if (Math.abs(dx) > 0 && Math.abs(dy) > 0 && Math.abs(dx) != Math.abs(dy)) {
+            return null;
+        }
         if (dx == 0) {
             if (dy > 0) {
                 return DIR[0];
@@ -58,20 +54,15 @@ final public class Square {
 
     /** Return true iff COL ROW is a legal square. */
     public static boolean exists(int col, int row) {
-        return row >= 0 && col >= 0 && row < Board.BOARD_SIZE && col < Board.BOARD_SIZE;
+        return row >= 0 && col >= 0 && row < Board.getBoardSize() && col < Board.getBoardSize();
     }
 
     /** Return the (unique) Square denoting COL ROW. */
     public static Square sq(int col, int row) {
-        if (!exists(row, col)) {
+        if (!exists(col, row)) {
             throw new IllegalArgumentException("Row or column out of bounds");
         }
-        return sq(col * 10 + row);
-    }
-
-    /** Return the (unique) Square denoting the position with index INDEX. */
-    static Square sq(int index) {
-        return SQUARES[index];
+        return SQUARES[col][row];
     }
 
     /** Return the (unique) Square denoting the position COL ROW, where
@@ -90,26 +81,23 @@ final public class Square {
     }
 
     /** Return the Square with index INDEX. */
-    private Square(int index) {
-        _index = index;
-        _row = index % 10;
-        _col = index / 10;
-        int s = _col * 10 + _row;
+    private Square(int col, int row) {
+        _row = row;
+        _col = col;
         _str = (char) (_col + 'a') + Integer.toString(_row + 1);
     }
 
     /** The cache of all created squares, by index. */
-    private static final Square[] SQUARES =
-            new Square[Board.BOARD_SIZE * Board.BOARD_SIZE];
+    private static final Square[][] SQUARES =
+            new Square[Board.getBoardSize()][Board.getBoardSize()];
 
     static {
-        for (int i = Board.BOARD_SIZE * Board.BOARD_SIZE - 1; i >= 0; i -= 1) {
-            SQUARES[i] = new Square(i);
+        for (int col = Board.BOARD_SIZE - 1; col >= 0; col -= 1) {
+            for (int row = Board.BOARD_SIZE - 1; row >= 0; row -= 1) {
+                SQUARES[col][row] = new Square(col, row);
+            }
         }
     }
-
-    /** My index position. */
-    private final int _index;
 
     /** My row and column (redundant, since these are determined by _index). */
     private final int _row, _col;

@@ -12,8 +12,8 @@ import java.util.Arrays;
 import static board.Direction.UP;
 
 public class Preview extends Piece {
-    public Preview(Square sq, Player player, PieceType type) {
-        super(sq, player, type, new ArrayList<>(Arrays.asList(UP)), 1);
+    public Preview(Square sq, Player player) {
+        super(sq, player, PieceType.PREVIEW, new ArrayList<>(Arrays.asList(UP)), 1);
     }
 
     @Override
@@ -23,7 +23,7 @@ public class Preview extends Piece {
         Direction moveDir = from.direction(to);
         int dx = Math.abs(to.col() - from.col());
         int dy = Math.abs(to.row() - from.row());
-        if ((getPieceDir().contains(moveDir) && dx < getPieceRange() && dy < getPieceRange())
+        if ((getPieceDir().contains(moveDir) && dx <= getPieceRange() && dy <= getPieceRange())
                 || (isPromoted() && Shield.isLegalShieldMove(move))) {
             return true;
         }
@@ -39,7 +39,7 @@ public class Preview extends Piece {
         Player player = getPlayer();
         for (int row = 0; row < Board.getBoardSize(); row++) {
             Piece p = board.getPieceAt(Square.sq(to.col(), row));
-            if (p != null && p.getPlayer() == player && !p.isPromoted()) {
+            if (p != null && p instanceof Preview && p.getPlayer() == player && !p.isPromoted()) {
                 return false;
             }
         }

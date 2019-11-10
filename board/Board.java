@@ -47,7 +47,8 @@ public class Board {
         Square from = move.getFrom();
         Piece p = getPieceAt(from);
         if (from == to || p == null || p.getPlayer() != currPlayer ||
-                getPieceAt(to).getPlayer() == currPlayer || !p.isLegalPieceMove(move, this)) {
+                (getPieceAt(to) != null && getPieceAt(to).getPlayer() == currPlayer)
+                || !p.isLegalPieceMove(move, this)) {
             return false;
         }
 
@@ -62,8 +63,14 @@ public class Board {
         }
         removePieceAt(move.getFrom());
         placePieceAt(p, move.getTo());
+        if (p instanceof Drive) {
+            updateDrivePosition(p, move.getTo());
+        }
         if(isCheck(currPlayer)) {
             return false;
+        }
+        if (p instanceof Drive) {
+            updateDrivePosition(p, move.getFrom());
         }
         placePieceAt(p, move.getFrom());
         placePieceAt(oppPiece, move.getTo());
@@ -207,9 +214,15 @@ public class Board {
         Piece p = getPieceAt(move.getFrom());
         removePieceAt(move.getFrom());
         placePieceAt(p, move.getTo());
+        if (p instanceof Drive) {
+            updateDrivePosition(p, move.getTo());
+        }
         res = !isCheck(player);
         placePieceAt(p, move.getFrom());
         placePieceAt(oppPiece, move.getTo());
+        if (p instanceof Drive) {
+            updateDrivePosition(p, move.getFrom());
+        }
         return res;
     }
 
@@ -234,7 +247,7 @@ public class Board {
      * @param drive : drive to be updated
      * @param to : new location of the drive
      */
-    private void updateDrivePosition(Piece drive, Square to) {
+    public void updateDrivePosition(Piece drive, Square to) {
         driver_positions.put(drive.getPlayer(), to);
     }
 
@@ -242,7 +255,7 @@ public class Board {
         return getPieceAt(sq) != null;
     }
 
-    private boolean isOccupied(int row, int col) {
+    private boolean isOccupied(int col, int row) {
         return board[col][row] != null;
     }
 

@@ -27,10 +27,11 @@ public class Drive extends Piece {
     }
 
     public static boolean isLegalDriveMove(Move move) {
+        ArrayList<Direction> driveDir = new ArrayList<>(Arrays.asList(UP, DOWN, LEFT, RIGHT, UPRIGHT, UPLEFT, DOWNRIGHT, DOWNLEFT));
         Direction moveDir = move.getFrom().direction(move.getTo());
         int dx = Math.abs(move.getTo().col() - move.getFrom().col());
         int dy = Math.abs(move.getTo().row() - move.getFrom().row());
-        if (getPieceDir().contains(moveDir) && dx < getPieceRange() && dy < getPieceRange()) {
+        if (driveDir.contains(moveDir) && dx <= 1 && dy <= 1) {
             return true;
         }
         return false;

@@ -12,8 +12,8 @@ import java.util.Arrays;
 import static board.Direction.*;
 
 public class Governance extends Piece {
-    public Governance(Square sq, Player player, PieceType type) {
-        super(sq, player, type, new ArrayList<>(Arrays.asList(UPRIGHT, UPLEFT,
+    public Governance(Square sq, Player player) {
+        super(sq, player, PieceType.GOVERNANCE, new ArrayList<>(Arrays.asList(UPRIGHT, UPLEFT,
                 DOWNRIGHT, DOWNLEFT)), Board.getBoardSize() - 1);
     }
 
@@ -24,7 +24,7 @@ public class Governance extends Piece {
         Direction moveDir = from.direction(to);
         int dx = Math.abs(to.col() - from.col());
         int dy = Math.abs(to.row() - from.row());
-        if (!((getPieceDir().contains(moveDir) && dx < getPieceRange() && dy < getPieceRange())
+        if (!((getPieceDir().contains(moveDir) && dx <= getPieceRange() && dy <= getPieceRange())
                 || (isPromoted() && Drive.isLegalDriveMove(move)))) {
             return false;
         }

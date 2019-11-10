@@ -12,8 +12,8 @@ import java.util.Arrays;
 import static board.Direction.*;
 
 public class Notes extends Piece {
-    public Notes(Square sq, Player player, PieceType type) {
-        super(sq, player, type, new ArrayList<>(Arrays.asList(UP, DOWN, LEFT, RIGHT)),
+    public Notes(Square sq, Player player) {
+        super(sq, player, PieceType.NOTES, new ArrayList<>(Arrays.asList(UP, DOWN, LEFT, RIGHT)),
                 Board.getBoardSize() - 1);
     }
 
@@ -24,7 +24,7 @@ public class Notes extends Piece {
         Direction moveDir = from.direction(to);
         int dx = Math.abs(to.col() - from.col());
         int dy = Math.abs(to.row() - from.row());
-        if (!((getPieceDir().contains(moveDir) && dx < getPieceRange() && dy < getPieceRange())
+        if (!((getPieceDir().contains(moveDir) && dx <= getPieceRange() && dy <= getPieceRange())
                 || (isPromoted() && Drive.isLegalDriveMove(move)))) {
             return false;
         }

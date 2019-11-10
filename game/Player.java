@@ -17,6 +17,7 @@ public class Player {
     public Player(PlayerType playerType, Controller controller) {
         _playerType = playerType;
         _controller = controller;
+        currPieces = new ArrayList<>();
         capturedPieces = new ArrayList<>();
         promotion_row = (playerType == LOWER) ? Board.getBoardSize() - 1 : 0;
     }
@@ -32,6 +33,10 @@ public class Player {
 
     public void removeCurrPiece(Piece p) {
         currPieces.remove(p);
+    }
+
+    public void addCurrPiece(Piece p) {
+        currPieces.add(p);
     }
 
     public ArrayList<Piece> getCapturedPieces() {

@@ -33,11 +33,11 @@ public abstract class Piece {
         location = to;
     }
 
-    public static boolean isLegalPieceMove(Move move, Board board) {
+    public boolean isLegalPieceMove(Move move, Board board) {
         Direction moveDir = move.getFrom().direction(move.getTo());
         int dx = Math.abs(move.getTo().col() - move.getFrom().col());
         int dy = Math.abs(move.getTo().row() - move.getFrom().row());
-        if (pieceDir.contains(moveDir) && dx < pieceRange && dy < pieceRange) {
+        if (getPieceDir().contains(moveDir) && dx < getPieceRange() && dy < getPieceRange()) {
             return true;
         }
         return false;
@@ -45,9 +45,7 @@ public abstract class Piece {
 
     public final void capture(Player p) {
         owner = p;
-        if (promoted) {
-            demote();
-        }
+        demote();
     }
 
     /**
@@ -57,14 +55,13 @@ public abstract class Piece {
      */
     public ArrayList<Move> getValidMoves(Board board) {
         ArrayList<Move> validMoves = new ArrayList<>();
-        for (int i = 1; i <= pieceRange; i++) {
-            for (Direction dir : pieceDir) {
-                int newRow = location.row()+ i * dir.getDy();
-                int newCol = location.col()+ i * dir.getDx();
-                if (Square.exists(newCol, newRow)
-                        && board.isValidMove(new Move(location, Square.sq(newCol, newRow)), owner, false)) {
-                    validMoves.add(new Move(location, Square.sq(newCol, newRow)));
+        for (int row = 0; row < Board.getBoardSize(); row++) {
+            for (int col = 0; col < Board.getBoardSize(); col++) {
+                Square sq = Square.sq(col, row);
+                if (board.isValidMove(new Move(location, sq, false), owner)) {
+                    validMoves.add(new Move(location, sq, false));
                 }
+
             }
         }
         return validMoves;
@@ -95,6 +92,18 @@ public abstract class Piece {
 
     public final Square getLocation() {
         return location;
+    }
+
+    public static ArrayList<Direction> getPieceDir() {
+        return pieceDir;
+    }
+
+    public static int getPieceRange() {
+        return pieceRange;
+    }
+
+    public boolean isPromoted() {
+        return promoted;
     }
 
     public final String toString() {

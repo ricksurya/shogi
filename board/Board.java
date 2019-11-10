@@ -13,7 +13,7 @@ import java.util.Map;
  */
 public class Board {
 
-    Piece[][] board;
+    private Piece[][] board;
     final static int BOARD_SIZE = 5;
     private Map<Player, Square> driver_positions;
 
@@ -40,10 +40,9 @@ public class Board {
      * piece move, and the move does not cause currPlayer to be in a check position.
      * @param move : move to be checked
      * @param currPlayer : the moving player
-     * @param promote : whether the move is promoting the piece
-     * @return : true if valid
+=     * @return : true if valid
      */
-    public boolean isValidMove(Move move, Player currPlayer, boolean promote) {
+    public boolean isValidMove(Move move, Player currPlayer) {
         Square to = move.getTo();
         Square from = move.getFrom();
         Piece p = getPieceAt(from);
@@ -52,7 +51,7 @@ public class Board {
             return false;
         }
 
-        if (promote && !p.isLegalPromote(to)) {
+        if (move.isPromote() && !p.isLegalPromote(to)) {
             return false;
         }
 
@@ -76,9 +75,8 @@ public class Board {
      * Executes the move by currPlayer. The game must first check whether the move is valid before executing the move.
      * @param move : move to be executed
      * @param currPlayer : the player who is moving
-     * @param promote : whether the player wishes to promote a piece
      */
-    public void makeMove(Move move, Player currPlayer, boolean promote) {
+    public void makeMove(Move move, Player currPlayer) {
         Square to = move.getTo();
         Square from = move.getFrom();
         Piece p = getPieceAt(from);
@@ -91,7 +89,7 @@ public class Board {
             removePieceAt(to);
         }
 
-        if (promote || p instanceof Preview && to.row() == currPlayer.getPromotionRow()) {
+        if (move.isPromote() || p instanceof Preview && to.row() == currPlayer.getPromotionRow()) {
             p.promote();
         }
 
@@ -142,7 +140,7 @@ public class Board {
         Player opponent = getOpponent(player);
         Square driverPosition = driver_positions.get(player);
         for (Piece p : opponent.getCurrPieces()) {
-            if (isValidMove(new Move(p.getLocation(), driverPosition), opponent, false)) {
+            if (isValidMove(new Move(p.getLocation(), driverPosition, false), opponent)) {
                 return true;
             }
         }
@@ -197,7 +195,7 @@ public class Board {
      * @return : true if the move can uncheck the player
      */
     private boolean canMoveUncheck(Move move, Player player) {
-        if (!isValidMove(move, player, false)) {
+        if (!isValidMove(move, player)) {
             return false;
         }
         boolean res;
@@ -252,11 +250,11 @@ public class Board {
         return board[sq.col()][sq.row()];
     }
 
-    void removePieceAt(Square sq) {
+    public void removePieceAt(Square sq) {
         board[sq.col()][sq.row()] = null;
     }
 
-    void placePieceAt(Piece p, Square sq) {
+    public void placePieceAt(Piece p, Square sq) {
         board[sq.col()][sq.row()] = p;
     }
 

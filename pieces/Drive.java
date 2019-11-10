@@ -1,6 +1,8 @@
 package pieces;
 
+import board.Board;
 import board.Direction;
+import board.Move;
 import board.Square;
 import game.Player;
 
@@ -14,8 +16,9 @@ import java.util.Arrays;
  * @author ricksurya
  */
 public class Drive extends Piece {
-    public Drive(Square sq, Player player, PieceType type) {
-        super(sq, player, type);
+    public Drive(Square sq, Player player) {
+        super(sq, player, PieceType.DRIVE, new ArrayList<>(Arrays.asList(UP, DOWN, LEFT, RIGHT, UPRIGHT,
+                UPLEFT, DOWNRIGHT, DOWNLEFT)), 1);
     }
 
     @Override
@@ -23,8 +26,14 @@ public class Drive extends Piece {
         return false;
     }
 
-    @Override
-    public static int getPieceRange() {
-        return 1;
+    public static boolean isLegalDriveMove(Move move) {
+        Direction moveDir = move.getFrom().direction(move.getTo());
+        int dx = Math.abs(move.getTo().col() - move.getFrom().col());
+        int dy = Math.abs(move.getTo().row() - move.getFrom().row());
+        if (getPieceDir().contains(moveDir) && dx < getPieceRange() && dy < getPieceRange()) {
+            return true;
+        }
+        return false;
     }
+
 }

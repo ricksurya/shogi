@@ -11,7 +11,7 @@ public class Drop extends Move {
     private Piece piece;
 
     public Drop(Square to, Piece p) {
-        super(null, to);
+        super(null, to, false);
         piece = p;
     }
 

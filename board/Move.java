@@ -10,8 +10,11 @@ public class Move {
     /** The printed form of a Move. */
     private String _str;
 
+    private final boolean _promote;
+
     /** Construct the Move FROM-TO. */
-    public Move(Square from, Square to) {
+    public Move(Square from, Square to, boolean promote) {
+        _promote = promote;
         _from = from;
         _to = to;
         _str = String.format("move %s %s", from, to);
@@ -26,6 +29,8 @@ public class Move {
     public Square getTo() {
         return _to;
     }
+
+    public boolean isPromote() {return _promote;}
 
     @Override
     public String toString() {

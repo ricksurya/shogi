@@ -8,7 +8,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import pieces.Piece;
+import pieces.*;
 import pieces.PieceType;
 
 import static org.junit.Assert.*;
@@ -31,7 +31,7 @@ public class BoardTest {
     @Test
     public void testBasicPutGet() {
         Square sq = Square.sq(2, 2);
-        Piece p = new Piece(sq, lower, PieceType.PREVIEW);
+        Piece p = new Drive(sq, lower);
         b.placePieceAt(p, sq);
         assertEquals(b.getPieceAt(sq), p);
     }

@@ -8,7 +8,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import static board.Direction.*;
-import static game.PlayerType.LOWER;
 import static game.PlayerType.UPPER;
 
 public class Piece {
@@ -59,14 +58,19 @@ public class Piece {
         }
     }
 
-    public Set<Move> getLegalMoves(Square from, Board board) {
+    /**
+     * Returns a set of valid moves for the piece, given the board and its current location.
+     * @param board : board for the piece to check valid moves
+     * @return : set of valid moves.
+     */
+    public Set<Move> getValidMoves(Board board) {
         Set<Move> validMoves = new HashSet<>();
         for (int i = 1; i <= PIECE_RANGE; i++) {
             for (Direction dir : PIECE_DIR) {
-                int newRow = from.row()+ i * dir.getDy();
-                int newCol = from.col()+ i * dir.getDx();
+                int newRow = location.row()+ i * dir.getDy();
+                int newCol = location.col()+ i * dir.getDx();
                 if (Square.exists(newCol, newRow) && board.getPieceAt(Square.sq(newCol, newRow)).getPlayer() != owner) {
-                    validMoves.add(new Move(from, Square.sq(newCol, newRow)));
+                    validMoves.add(new Move(location, Square.sq(newCol, newRow)));
                 }
             }
         }
@@ -94,6 +98,10 @@ public class Piece {
 
     public final Player getPlayer() {
         return owner;
+    }
+
+    public final Square getLocation() {
+        return location;
     }
 
     public final String toString() {

@@ -14,7 +14,7 @@ public class Player {
     private ArrayList<Piece> currPieces;
     private int promotion_row;
 
-    Player(PlayerType playerType, Controller controller) {
+    public Player(PlayerType playerType, Controller controller) {
         _playerType = playerType;
         _controller = controller;
         capturedPieces = new ArrayList<>();

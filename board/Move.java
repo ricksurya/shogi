@@ -14,7 +14,7 @@ public class Move {
     public Move(Square from, Square to) {
         _from = from;
         _to = to;
-        _str = String.format("%s-%s(%s)", from, to);
+        _str = String.format("move %s %s", from, to);
     }
 
     /** Return the square moved from. */

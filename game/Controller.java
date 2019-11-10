@@ -3,7 +3,7 @@ package game;
 import board.Board;
 
 public class Controller {
-    Controller(Reporter reporter, Player lower, Player upper) {
+    public Controller(Reporter reporter) {
 
     }
 

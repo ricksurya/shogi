@@ -8,7 +8,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Class to represent Box Shogi board
+ * Class to represent Box Shogi board. The Board class consists of functions that validate and control the movement
+ * of pieces and the representation of a board throughout the game. The board also keep tracks of the location of the
+ * Drives (the King pieces in Shogi) to identify if there are any Check or Checkmate positions.
  * @author ricksurya
  */
 public class Board {

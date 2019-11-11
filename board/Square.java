@@ -2,6 +2,12 @@ package board;
 
 import static board.Direction.*;
 
+/**
+ * The square class represents a location on the Shogi board. Although we do not keep track of what is on a Square,
+ * the main purpose of the Square is to represent a location for purposes of keeping track of movements of pieces or
+ * drops.
+ * @author ricksurya
+ */
 final public class Square {
     /** Return the row position, where 0 is the bottom row (this represents row 1). */
     public int row() {

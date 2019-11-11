@@ -4,14 +4,15 @@ import board.*;
 import game.Player;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
 import static game.PlayerType.UPPER;
 
 /**
- * Class to represent a piece in Shogi.
+ * Class to represent a piece in Shogi. Each piece has a unique owner - either UPPER or LOWER. We also keep track of the
+ * location of a piece through a variable. Some pieces can also be promoted - this typically enhances their movement
+ * abilities.
  * @author ricksurya
  */
 public abstract class Piece {

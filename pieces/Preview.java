@@ -8,7 +8,7 @@ import game.Player;
 import game.PlayerType;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static board.Direction.*;
@@ -35,11 +35,8 @@ public class Preview extends Piece {
         Direction moveDir = from.direction(to);
         int dx = Math.abs(to.col() - from.col());
         int dy = Math.abs(to.row() - from.row());
-        if ((getPieceDir().contains(moveDir) && dx <= getPieceRange() && dy <= getPieceRange())
-                || (isPromoted() && Shield.isLegalShieldMove(move, getPlayer()))) {
-            return true;
-        }
-        return false;
+        return (getPieceDir().contains(moveDir) && dx <= getPieceRange() && dy <= getPieceRange())
+                || (isPromoted() && Shield.isLegalShieldMove(move, getPlayer()));
     }
 
     /**
@@ -60,7 +57,7 @@ public class Preview extends Piece {
         Player player = getPlayer();
         for (int row = 0; row < Board.getBoardSize(); row++) {
             Piece p = board.getPieceAt(Square.sq(to.col(), row));
-            if (p != null && p instanceof Preview && p.getPlayer() == player && !p.isPromoted()) {
+            if (p instanceof Preview && p.getPlayer() == player && !p.isPromoted()) {
                 return false;
             }
         }
@@ -84,9 +81,9 @@ public class Preview extends Piece {
     public List<Direction> getPieceDir() {
         ArrayList<Direction> previewDir;
         if (getPlayer().getPlayerType() == PlayerType.LOWER) {
-            previewDir = new ArrayList<>(Arrays.asList(UP));
+            previewDir = new ArrayList<>(Collections.singletonList(UP));
         } else {
-            previewDir = new ArrayList<>(Arrays.asList(DOWN));
+            previewDir = new ArrayList<>(Collections.singletonList(DOWN));
         }
         return previewDir;
     }

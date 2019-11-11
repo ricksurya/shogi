@@ -36,7 +36,7 @@ public class Controller {
      * Constructor for the file mode
      * @param reporter : Reporter for the controller
      * @param testCaseName : the name of the test case file, ex: basicCheck.in
-     * @throws Exception
+     * @throws Exception : possible exception in parsing the test case
      */
     public Controller(Reporter reporter, String testCaseName) throws Exception {
         _reporter = reporter;
@@ -52,7 +52,7 @@ public class Controller {
     /**
      * Constructor for interactive mode.
      * @param reporter : Reporter for the controller
-     * @throws Exception
+     * @throws Exception : possible exception in parsing the test case
      */
     public Controller(Reporter reporter) throws Exception {
         _reporter = reporter;
@@ -205,7 +205,7 @@ public class Controller {
             Player opponent = _board.getOpponent(currPlayer);
             String[] command = (sc.nextLine()).split("\\s+");
             if (command[0].equals("move")) {
-                Move move = new Move(Square.sq(command[1]), Square.sq(command[2]), (command.length == 4) ? true : false);
+                Move move = new Move(Square.sq(command[1]), Square.sq(command[2]), command.length == 4);
                 if (!_board.isValidMove(move, currPlayer)) {
                     _reporter.reportIllegalMove(opponent);
                     break;

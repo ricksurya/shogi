@@ -24,7 +24,7 @@ public class Shield extends Piece {
     }
 
     /** A static method that helps other pieces determine whether the move is a valid Shield move. */
-    public static boolean isLegalShieldMove(Move move, Player player) {
+    static boolean isLegalShieldMove(Move move, Player player) {
         ArrayList<Direction> shieldDir;
         if (player.getPlayerType() == PlayerType.LOWER) {
             shieldDir = new ArrayList<>(Arrays.asList(UP, DOWN, LEFT, RIGHT, UPRIGHT, UPLEFT));
@@ -34,10 +34,7 @@ public class Shield extends Piece {
         Direction moveDir = move.getFrom().direction(move.getTo());
         int dx = Math.abs(move.getTo().col() - move.getFrom().col());
         int dy = Math.abs(move.getTo().row() - move.getFrom().row());
-        if (shieldDir.contains(moveDir) && dx <= 1 && dy <= 1) {
-            return true;
-        }
-        return false;
+        return shieldDir.contains(moveDir) && dx <= 1 && dy <= 1;
     }
 
     /**

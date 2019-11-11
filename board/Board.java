@@ -126,10 +126,7 @@ public class Board {
     public boolean isValidDrop(Drop drop, Player currPlayer) {
         Piece p = drop.getPiece();
         Square to = drop.getTo();
-        if (!currPlayer.getCapturedPieces().contains(p) || getPieceAt(to) != null || !p.isLegalDrop(to, this)) {
-            return false;
-        }
-        return true;
+        return currPlayer.getCapturedPieces().contains(p) && getPieceAt(to) == null && p.isLegalDrop(to, this);
     }
 
     /**

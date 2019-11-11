@@ -38,16 +38,13 @@ public class Relay extends Piece{
         if (isPromoted() && Shield.isLegalShieldMove(move, getPlayer())) {
             return true;
         }
-        if (!isPromoted() && getPieceDir().contains(moveDir) && dx <= getPieceRange() && dy <= getPieceRange()) {
-            return true;
-        }
-        return false;
+        return !isPromoted() && getPieceDir().contains(moveDir) && dx <= getPieceRange() && dy <= getPieceRange();
     }
 
     /**
      * The Relay piece can only move to front directions, but not horizontally or backward. This, like the Preview piece,
      * is relative to it's starting position.
-     * @return
+     * @return : list of valid Relay directions
      */
     @Override
     public List<Direction> getPieceDir() {

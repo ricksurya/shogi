@@ -61,10 +61,7 @@ public abstract class Piece {
         Direction moveDir = move.getFrom().direction(move.getTo());
         int dx = Math.abs(move.getTo().col() - move.getFrom().col());
         int dy = Math.abs(move.getTo().row() - move.getFrom().row());
-        if (getPieceDir().contains(moveDir) && dx <= getPieceRange() && dy <= getPieceRange()) {
-            return true;
-        }
-        return false;
+        return getPieceDir().contains(moveDir) && dx <= getPieceRange() && dy <= getPieceRange();
     }
 
     /**
@@ -105,10 +102,7 @@ public abstract class Piece {
      * @return : true if valid promotion
      */
     public boolean isLegalPromote(Square to) {
-        if (!promoted && to.row() == owner.getPromotionRow()) {
-            return true;
-        }
-        return false;
+        return !promoted && to.row() == owner.getPromotionRow();
     }
 
     /**
@@ -139,7 +133,7 @@ public abstract class Piece {
         return location;
     }
 
-    public int getPieceRange() {
+    int getPieceRange() {
         return pieceRange;
     }
 

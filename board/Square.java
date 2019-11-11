@@ -3,21 +3,22 @@ package board;
 import static board.Direction.*;
 
 final public class Square {
-    /** Return my row position, where 0 is the bottom row. */
+    /** Return the row position, where 0 is the bottom row (this represents row 1). */
     public int row() {
         return _row;
     }
 
-    /** Return my column position, where 0 is the leftmost column. */
+    /** Return the column position, where 0 is the leftmost column (this represents column a). */
     public int col() {
         return _col;
     }
 
-    /** All possible directions. */
+    /** All possible directions in the game of Shogi. */
     private static final Direction[] DIR = {UP, UPRIGHT, RIGHT, DOWNRIGHT, DOWN, DOWNLEFT, LEFT, UPLEFT};
 
 
-    /** Return the direction as a result of move THIS-TO. If it is not a valid direction, return null. */
+    /** Return the direction as a result of move the current square to TO.
+     * If it is not a valid direction, return null. */
     public Direction direction(Square to) {
         int dx = to.col() - col();
         int dy = to.row() - row();
@@ -52,12 +53,12 @@ final public class Square {
         return _str;
     }
 
-    /** Return true iff COL ROW is a legal square. */
+    /** Returns true if the square is in bounds. */
     public static boolean exists(int col, int row) {
         return row >= 0 && col >= 0 && row < Board.getBoardSize() && col < Board.getBoardSize();
     }
 
-    /** Return the (unique) Square denoting COL ROW. */
+    /** Return the Square with position COL ROW. */
     public static Square sq(int col, int row) {
         if (!exists(col, row)) {
             throw new IllegalArgumentException("Row or column out of bounds");
@@ -65,29 +66,26 @@ final public class Square {
         return SQUARES[col][row];
     }
 
-    /** Return the (unique) Square denoting the position COL ROW, where
-     *  COL ROW is the standard text format for a square (e.g., a4). */
+    /** Return the Square given the input as a string of col, row (ex: a, 4). */
     public static Square sq(String col, String row) {
         int c = col.charAt(0) - 'a';
         int r = Integer.parseInt(row) - 1;
         return sq(c, r);
     }
 
-    /** Return the (unique) Square denoting the position in POSN, in the
-     *  standard text format for a square (e.g. a4). POSN must be a
-     *  valid square designation. */
+    /** Return the Square given the input as a single string (ex: a4). */
     public static Square sq(String posn) {
         return sq(posn.substring(0, 1), posn.substring(1));
     }
 
-    /** Return the Square with index INDEX. */
+    /** Return the Square with the given col, row. */
     private Square(int col, int row) {
         _row = row;
         _col = col;
         _str = (char) (_col + 'a') + Integer.toString(_row + 1);
     }
 
-    /** The cache of all created squares, by index. */
+    /** All possible squares by col, row. */
     private static final Square[][] SQUARES =
             new Square[Board.getBoardSize()][Board.getBoardSize()];
 
@@ -99,10 +97,10 @@ final public class Square {
         }
     }
 
-    /** My row and column (redundant, since these are determined by _index). */
+    /** Row and column of the square. */
     private final int _row, _col;
 
-    /** My String denotation. */
+    /** The string form of the square. */
     private final String _str;
 
 }

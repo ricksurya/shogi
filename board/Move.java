@@ -1,6 +1,6 @@
 package board;
 
-/** A move in the game of Shogi
+/** A move in the game of Shogi. A move consists of a FROM square and a TO (destination) square.
  *  @author ricksurya
  */
 public class Move {
@@ -9,7 +9,7 @@ public class Move {
     private final Square _from, _to;
     /** The printed form of a Move. */
     private String _str;
-
+    /** Whether the move intends to promote the moved piece. */
     private final boolean _promote;
 
     /** Construct the Move FROM-TO. */
@@ -30,6 +30,7 @@ public class Move {
         return _to;
     }
 
+    /** Return whether the move intends to promote the piece moved. */
     public boolean isPromote() {return _promote;}
 
     @Override

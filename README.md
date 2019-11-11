@@ -34,3 +34,14 @@ too many iterations through possible moves in the board, as well as a lot of val
 by introducing a `location` variable for each Piece but it does not entirely solve the problem. Also, checking whether a 
 piece movement is valid does not only depend on the movement itself but the state of the Board as well, so there is a lot of 
 interdependency between these two.
+
+# Running the game
+To run the game in interactive mode, where you play with two players and input moves manually, run: 
+```
+java game/Main.java -i
+```
+To run the game in filemode, run:
+```
+java game/Main.java -f <filepath>.in
+```
+Remember to be in the box-take-home directory when you are running the commands :)

@@ -17,6 +17,9 @@ public class Board {
     final static int BOARD_SIZE = 5;
     private Map<Player, Square> driver_positions;
 
+    /**
+     * Initialize an empty board.
+     */
     public Board() {
         board = new Piece[BOARD_SIZE][BOARD_SIZE];
         driver_positions = new HashMap<>();
@@ -207,7 +210,6 @@ public class Board {
             return false;
         }
         boolean res;
-        Player opponent = getOpponent(player);
         Piece oppPiece = getPieceAt(move.getTo());
         if (oppPiece != null) {
             removePieceAt(move.getTo());

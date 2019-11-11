@@ -1,7 +1,5 @@
 package game;
 
-import static game.Utils.*;
-
 /**
  * Class to be run from the terminal for a game of Minishogi.
  * @author ricksurya
@@ -9,18 +7,19 @@ import static game.Utils.*;
 public class Main {
     /**
      * The main method
-     * @param args : arguments from terminal
+     * @param args : arguments from terminal. "-i" flag will run interactive mode, "-f <filename>" would run file mode
+     *              on file <filename>
      */
     public static void main(String[] args) {
         try {
             if (args[0].equals("-i")) {
                 Reporter reporter = new Reporter();
                 Controller controller = new Controller(reporter);
-                controller.play();
+                controller.playInteractiveMode();
             } else if (args[0].equals("-f")) {
                 Reporter reporter = new Reporter();
                 Controller controller = new Controller(reporter, args[1]);
-                controller.play();
+                controller.playFileMode();
             } else {
                 System.out.println("Illegal argument");
             }

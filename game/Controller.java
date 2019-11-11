@@ -19,22 +19,31 @@ public class Controller {
     private final Player lowerPlayer;
     private final Player upperPlayer;
     private Board _board;
-    private boolean isFileMode;
     private List<String> moves;
 
 
-    public Controller(Reporter reporter, String testCasePath) throws Exception {
+    /**
+     * Constructor for the file mode
+     * @param reporter : Reporter for the controller
+     * @param testCaseName : the name of the test case file, ex: basicCheck.in
+     * @throws Exception
+     */
+    public Controller(Reporter reporter, String testCaseName) throws Exception {
         _reporter = reporter;
         lowerPlayer = new Player(PlayerType.LOWER, this);
         upperPlayer = new Player(PlayerType.UPPER, this);
         _board = new Board();
         moveCount = 0;
-        TestCase testCase = parseTestCase(testCasePath);
+        TestCase testCase = parseTestCase(testCaseName);
         initBoard(testCase.initialPieces, testCase.upperCaptures, testCase.lowerCaptures);
         moves = testCase.moves;
-        isFileMode = true;
     }
 
+    /**
+     * Constructor for interactive mode.
+     * @param reporter : Reporter for the controller
+     * @throws Exception
+     */
     public Controller(Reporter reporter) throws Exception {
         _reporter = reporter;
         lowerPlayer = new Player(PlayerType.LOWER, this);
@@ -43,9 +52,14 @@ public class Controller {
         moveCount = 0;
         TestCase testCase = parseTestCase(defaultPath);
         initBoard(testCase.initialPieces, testCase.upperCaptures, testCase.lowerCaptures);
-        isFileMode = false;
     }
 
+    /**
+     * Initializes the board given the test case files.
+     * @param initialPositions : initial positions of the pieces. A helper function will parse pieces.
+     * @param upperCaptures : list of pieces captured by upper
+     * @param lowerCaptures : list of pieces captured by lower
+     */
     private void initBoard(List<InitialPosition> initialPositions, List<String> upperCaptures,
                            List<String> lowerCaptures) {
         Square location;
@@ -79,13 +93,107 @@ public class Controller {
         }
     }
 
-    public void play(List<String> moves) {
+    /**
+     * Function to run file mode/test cases.
+     */
+    public void playFileMode() {
         Player currPlayer = lowerPlayer;
-        int i = 0;
-        while (i < moves.size() && moveCount <= MOVE_LIMIT) {
+        while (moveCount < moves.size() && moveCount <= MOVE_LIMIT) {
+            String[] command = moves.get(moveCount).split("\\s+");
+            if (command[0].equals("move")) {
+                if(!doFileMove(command, currPlayer)) {
+                    break;
+                }
+            } else {
+                if (!doFileDrop(command, currPlayer)) {
+                    break;
+                }
+            }
+            moveCount++;
+            currPlayer = _board.getOpponent(currPlayer);
+        }
+    }
+
+    /**
+     * Helper function for file mode runner. It returns false if the given move is invalid or causes a checkmate.
+     * @param command : the move in a String format.
+     * @param currPlayer : player executing the move
+     * @return : false if the move is illegal/results in a checkmate
+     */
+    private boolean doFileMove(String[] command, Player currPlayer) {
+        Player opponent = _board.getOpponent(currPlayer);
+        Move move = new Move(Square.sq(command[1]), Square.sq(command[2]), command.length == 4);
+        if (!_board.isValidMove(move, currPlayer)) {
+            _reporter.reportMove(currPlayer, move, _board, upperPlayer, lowerPlayer);
+            _reporter.reportIllegalMove(opponent);
+            return false;
+        }
+        _board.makeMove(move, currPlayer);
+        if (_board.isCheckMate(opponent)) {
+            _reporter.reportMove(currPlayer, move, _board, upperPlayer, lowerPlayer);
+            _reporter.reportCheckMate(currPlayer);
+            return false;
+        }
+        if (moveCount == MOVE_LIMIT - 1 || moveCount == moves.size() - 1) {
+            _reporter.reportMove(currPlayer, move, _board, upperPlayer, lowerPlayer);
+            if (moveCount == MOVE_LIMIT - 1) {
+                _reporter.reportTie();
+            } else {
+                if (_board.isCheck(opponent)) {
+                    _reporter.reportCheck(opponent, _board.getUncheckMoves(opponent));
+                }
+                _reporter.reportNextTurn(opponent);
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Helper function for file mode runner. It returns false if the given drop is invalid or causes a checkmate.
+     * @param command : the drop in a String format.
+     * @param currPlayer : player executing the drop
+     * @return : false if the drop is illegal/results in a checkmate
+     */
+
+    private boolean doFileDrop(String[] command, Player currPlayer) {
+        Player opponent = _board.getOpponent(currPlayer);
+        Drop drop = new Drop(Square.sq(command[2]), currPlayer.getCapturedPiece(command[1]));
+        if (!_board.isValidDrop(drop, currPlayer)) {
+            _reporter.reportIllegalDrop(currPlayer, drop, command[1], _board, upperPlayer, lowerPlayer);
+            return false;
+        }
+        _board.makeDrop(drop, currPlayer);
+        if (_board.isCheckMate(opponent)) {
+            _reporter.reportDrop(currPlayer, drop, _board, upperPlayer,lowerPlayer);
+            _reporter.reportCheckMate(currPlayer);
+            return false;
+        }
+        if (moveCount == MOVE_LIMIT - 1 || moveCount == moves.size() - 1) {
+            _reporter.reportDrop(currPlayer, drop, _board, upperPlayer, lowerPlayer);
+            if (moveCount == MOVE_LIMIT - 1) {
+                _reporter.reportTie();
+            } else {
+                if (_board.isCheck(opponent)) {
+                    _reporter.reportCheck(opponent, _board.getUncheckMoves(opponent));
+                }
+                _reporter.reportNextTurn(opponent);
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Function to run the interactive mode.
+     */
+    public void playInteractiveMode() {
+        Player currPlayer = lowerPlayer;
+        Scanner sc = new Scanner(System.in);
+        while (moveCount <= MOVE_LIMIT) {
+            _reporter.reportBoard(_board);
+            _reporter.reportCaptures(upperPlayer, lowerPlayer);
             _reporter.reportNextTurn(currPlayer);
             Player opponent = _board.getOpponent(currPlayer);
-            String[] command = moves.get(i).split("\\s+");
+            String[] command = (sc.nextLine()).split("\\s+");
             if (command[0].equals("move")) {
                 Move move = new Move(Square.sq(command[1]), Square.sq(command[2]), (command.length == 4) ? true : false);
                 if (!_board.isValidMove(move, currPlayer)) {
@@ -93,7 +201,6 @@ public class Controller {
                     break;
                 }
                 _board.makeMove(move, currPlayer);
-                _reporter.reportMove(currPlayer, move);
             } else {
                 Drop drop = new Drop(Square.sq(command[2]), currPlayer.getCapturedPiece(command[1]));
                 if (!_board.isValidDrop(drop, currPlayer)) {
@@ -101,135 +208,18 @@ public class Controller {
                     break;
                 }
                 _board.makeDrop(drop, currPlayer);
-                _reporter.reportDrop(currPlayer, drop);
             }
-            _reporter.reportBoard(_board);
-            _reporter.reportCaptures(upperPlayer, lowerPlayer);
             moveCount++;
-            i++;
             if (_board.isCheckMate(opponent)) {
                 _reporter.reportCheckMate(currPlayer);
                 break;
-            }
-            if (_board.isCheck(opponent)) {
-                _reporter.reportCheck(opponent, _board.getUncheckMoves(opponent));
             }
             currPlayer = _board.getOpponent(currPlayer);
             if (moveCount == MOVE_LIMIT) {
                 _reporter.reportTie();
             }
         }
-    }
-
-    public void play() {
-        Move lastMove;
-        Drop lastDrop;
-        Player currPlayer = lowerPlayer;
-        if (isFileMode) {
-            int i = 0;
-            while (i < moves.size() && moveCount <= MOVE_LIMIT) {
-                Player opponent = _board.getOpponent(currPlayer);
-                String[] command = moves.get(i).split("\\s+");
-                if (command[0].equals("move")) {
-                    Move move = new Move(Square.sq(command[1]), Square.sq(command[2]), (command.length == 4) ? true : false);
-                    if (!_board.isValidMove(move, currPlayer)) {
-                        _reporter.reportMove(currPlayer, move);
-                        _reporter.reportBoard(_board);
-                        _reporter.reportCaptures(upperPlayer, lowerPlayer);
-                        _reporter.reportIllegalMove(opponent);
-                        break;
-                    }
-                    _board.makeMove(move, currPlayer);
-                    if (_board.isCheckMate(opponent)) {
-                        _reporter.reportMove(currPlayer, move);
-                        _reporter.reportBoard(_board);
-                        _reporter.reportCaptures(upperPlayer, lowerPlayer);
-                        _reporter.reportCheckMate(currPlayer);
-                        break;
-                    }
-                    if (moveCount == MOVE_LIMIT - 1|| i == moves.size() - 1) {
-                        _reporter.reportMove(currPlayer, move);
-                        _reporter.reportBoard(_board);
-                        _reporter.reportCaptures(upperPlayer, lowerPlayer);
-                        if (moveCount == MOVE_LIMIT - 1) {
-                            _reporter.reportTie();
-                        } else {
-                            if (_board.isCheck(opponent)) {
-                                _reporter.reportCheck(opponent, _board.getUncheckMoves(opponent));
-                            }
-                            _reporter.reportNextTurn(opponent);
-                        }
-                    }
-                } else {
-                    Drop drop = new Drop(Square.sq(command[2]), currPlayer.getCapturedPiece(command[1]));
-                    if (!_board.isValidDrop(drop, currPlayer)) {
-                        _reporter.reportIllegalDrop(currPlayer, drop, command[1]);
-                        _reporter.reportBoard(_board);
-                        _reporter.reportCaptures(upperPlayer, lowerPlayer);
-                        _reporter.reportIllegalMove(opponent);
-                        break;
-                    }
-                    _board.makeDrop(drop, currPlayer);
-                    if (_board.isCheckMate(opponent)) {
-                        _reporter.reportDrop(currPlayer, drop);
-                        _reporter.reportBoard(_board);
-                        _reporter.reportCaptures(upperPlayer, lowerPlayer);
-                        _reporter.reportCheckMate(currPlayer);
-                        break;
-                    }
-                    if (moveCount == MOVE_LIMIT - 1|| i == moves.size() - 1) {
-                        _reporter.reportDrop(currPlayer, drop);
-                        _reporter.reportBoard(_board);
-                        _reporter.reportCaptures(upperPlayer, lowerPlayer);
-                        if (moveCount == MOVE_LIMIT - 1) {
-                            _reporter.reportTie();
-                        } else {
-                            if (_board.isCheck(opponent)) {
-                                _reporter.reportCheck(opponent, _board.getUncheckMoves(opponent));
-                            }
-                            _reporter.reportNextTurn(opponent);
-                        }
-                    }
-                }
-                moveCount++;
-                i++;
-                currPlayer = _board.getOpponent(currPlayer);
-            }
-        } else {
-            _reporter.reportBoard(_board);
-            _reporter.reportCaptures(upperPlayer, lowerPlayer);
-            Scanner sc = new Scanner(System.in);
-            while (moveCount <= MOVE_LIMIT) {
-                _reporter.reportNextTurn(currPlayer);
-                Player opponent = _board.getOpponent(currPlayer);
-                String[] command = (sc.nextLine()).split("\\s+");
-                if (command[0].equals("move")) {
-                    Move move = new Move(Square.sq(command[1]), Square.sq(command[2]), (command.length == 4) ? true : false);
-                    if (!_board.isValidMove(move, currPlayer)) {
-                        _reporter.reportIllegalMove(opponent);
-                        break;
-                    }
-                    _board.makeMove(move, currPlayer);
-                } else {
-                    Drop drop = new Drop(Square.sq(command[2]), currPlayer.getCapturedPiece(command[1]));
-                    if (!_board.isValidDrop(drop, currPlayer)) {
-                        _reporter.reportIllegalMove(opponent);
-                        break;
-                    }
-                    _board.makeDrop(drop, currPlayer);
-                }
-                moveCount++;
-                if (_board.isCheckMate(opponent)) {
-                    _reporter.reportCheckMate(currPlayer);
-                    break;
-                }
-                currPlayer = _board.getOpponent(currPlayer);
-                if (moveCount == MOVE_LIMIT) {
-                    _reporter.reportTie();
-                }
-            }
-            sc.close();
-        }
+        sc.close();
     }
 
 
@@ -286,5 +276,4 @@ public class Controller {
     public Board getBoard() {
         return _board;
     }
-
 }

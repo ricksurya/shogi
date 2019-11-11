@@ -5,15 +5,18 @@ import board.Direction;
 import board.Move;
 import board.Square;
 import game.Player;
+import game.PlayerType;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
-import static board.Direction.UP;
+import static board.Direction.*;
+import static board.Direction.UPRIGHT;
 
 public class Preview extends Piece {
     public Preview(Square sq, Player player) {
-        super(sq, player, PieceType.PREVIEW, new ArrayList<>(Arrays.asList(UP)), 1);
+        super(sq, player, PieceType.PREVIEW, 1);
     }
 
     @Override
@@ -24,7 +27,7 @@ public class Preview extends Piece {
         int dx = Math.abs(to.col() - from.col());
         int dy = Math.abs(to.row() - from.row());
         if ((getPieceDir().contains(moveDir) && dx <= getPieceRange() && dy <= getPieceRange())
-                || (isPromoted() && Shield.isLegalShieldMove(move))) {
+                || (isPromoted() && Shield.isLegalShieldMove(move, getPlayer()))) {
             return true;
         }
         return false;
@@ -45,9 +48,23 @@ public class Preview extends Piece {
         }
 
         board.placePieceAt(this, to);
+        updateLocation(to);
+        getPlayer().addCurrPiece(this);
         Player opponent = board.getOpponent(player);
         boolean res = !board.isCheckMate(opponent);
         board.removePieceAt(to);
+        getPlayer().removeCurrPiece(this);
         return res;
+    }
+
+    @Override
+    public List<Direction> getPieceDir() {
+        ArrayList<Direction> previewDir;
+        if (getPlayer().getPlayerType() == PlayerType.LOWER) {
+            previewDir = new ArrayList<>(Arrays.asList(UP));
+        } else {
+            previewDir = new ArrayList<>(Arrays.asList(DOWN));
+        }
+        return previewDir;
     }
 }

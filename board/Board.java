@@ -51,8 +51,9 @@ public class Board {
                 || !p.isLegalPieceMove(move, this)) {
             return false;
         }
-
-        if (move.isPromote() && !p.isLegalPromote(to)) {
+        // If promote && illegal to --> false ;;;; if promote && legal
+        if ((move.isPromote() && !p.isLegalPromote(to))
+                && !(move.isPromote() && !(p instanceof Preview) && p.isLegalPromote(from))) {
             return false;
         }
 
@@ -63,11 +64,12 @@ public class Board {
         }
         removePieceAt(move.getFrom());
         placePieceAt(p, move.getTo());
+        boolean res = true;
         if (p instanceof Drive) {
             updateDrivePosition(p, move.getTo());
         }
         if(isCheck(currPlayer)) {
-            return false;
+            res = false;
         }
         if (p instanceof Drive) {
             updateDrivePosition(p, move.getFrom());
@@ -75,7 +77,7 @@ public class Board {
         placePieceAt(p, move.getFrom());
         placePieceAt(oppPiece, move.getTo());
 
-        return true;
+        return res;
     }
 
     /**
@@ -174,14 +176,6 @@ public class Board {
      */
     public ArrayList<Move> getUncheckMoves(Player player) {
         ArrayList<Move> moves = new ArrayList<>();
-        for (Piece piece : player.getCurrPieces()) {
-            for (Move move : piece.getValidMoves(this)) {
-                if (canMoveUncheck(move, player)) {
-                    moves.add(move);
-                }
-            }
-        }
-
         for (Piece piece : player.getCapturedPieces()) {
             for (int r = 0; r < BOARD_SIZE; r++) {
                 for (int c = 0; c < BOARD_SIZE; c++) {
@@ -189,6 +183,13 @@ public class Board {
                     if (isValidDrop(drop, player) && canDropUncheck(drop, player)) {
                         moves.add(drop);
                     }
+                }
+            }
+        }
+        for (Piece piece : player.getCurrPieces()) {
+            for (Move move : piece.getValidMoves(this)) {
+                if (canMoveUncheck(move, player)) {
+                    moves.add(move);
                 }
             }
         }

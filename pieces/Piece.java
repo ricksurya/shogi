@@ -4,6 +4,9 @@ import board.*;
 import game.Player;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 import static game.PlayerType.UPPER;
 
@@ -17,11 +20,9 @@ public abstract class Piece {
     private PieceType type;
     private boolean promoted;
     private int pieceRange;
-    private ArrayList<Direction> pieceDir;
     private Square location;
 
-    public Piece(Square sq, Player player, PieceType type, ArrayList<Direction> dirs, int pieceRange) {
-        pieceDir = dirs;
+    public Piece(Square sq, Player player, PieceType type, int pieceRange) {
         this.pieceRange = pieceRange;
         owner = player;
         this.type = type;
@@ -55,8 +56,8 @@ public abstract class Piece {
      */
     public ArrayList<Move> getValidMoves(Board board) {
         ArrayList<Move> validMoves = new ArrayList<>();
-        for (int row = 0; row < Board.getBoardSize(); row++) {
-            for (int col = 0; col < Board.getBoardSize(); col++) {
+        for (int col = 0; col < Board.getBoardSize(); col++) {
+            for (int row = 0; row < Board.getBoardSize(); row++) {
                 Square sq = Square.sq(col, row);
                 if (board.isValidMove(new Move(location, sq, false), owner)) {
                     validMoves.add(new Move(location, sq, false));
@@ -94,8 +95,8 @@ public abstract class Piece {
         return location;
     }
 
-    public ArrayList<Direction> getPieceDir() {
-        return pieceDir;
+    public List<Direction> getPieceDir() {
+        return Collections.emptyList();
     }
 
     public int getPieceRange() {

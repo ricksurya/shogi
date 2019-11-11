@@ -20,13 +20,12 @@ public class Main {
             } else if (args[0].equals("-f")) {
                 Reporter reporter = new Reporter();
                 Controller controller = new Controller(reporter, args[1]);
-                TestCase testCase = parseTestCase(args[1]);
-                controller.play(testCase.moves);
+                controller.play();
             } else {
                 System.out.println("Illegal argument");
             }
         } catch (Exception e) {
-            System.out.println("ERROR");
+            System.out.println("some error: " + e.getMessage());
         }
     }
 }

@@ -8,13 +8,13 @@ import game.Player;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import static board.Direction.*;
 
 public class Notes extends Piece {
     public Notes(Square sq, Player player) {
-        super(sq, player, PieceType.NOTES, new ArrayList<>(Arrays.asList(UP, DOWN, LEFT, RIGHT)),
-                Board.getBoardSize() - 1);
+        super(sq, player, PieceType.NOTES, Board.getBoardSize() - 1);
     }
 
     @Override
@@ -39,5 +39,10 @@ public class Notes extends Piece {
             }
         }
         return true;
+    }
+
+    @Override
+    public List<Direction> getPieceDir() {
+        return new ArrayList<>(Arrays.asList(UP, DOWN, LEFT, RIGHT));
     }
 }

@@ -8,13 +8,13 @@ import game.Player;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import static board.Direction.*;
 
 public class Governance extends Piece {
     public Governance(Square sq, Player player) {
-        super(sq, player, PieceType.GOVERNANCE, new ArrayList<>(Arrays.asList(UPRIGHT, UPLEFT,
-                DOWNRIGHT, DOWNLEFT)), Board.getBoardSize() - 1);
+        super(sq, player, PieceType.GOVERNANCE,Board.getBoardSize() - 1);
     }
 
     @Override
@@ -39,5 +39,10 @@ public class Governance extends Piece {
             }
         }
         return true;
+    }
+
+    @Override
+    public List<Direction> getPieceDir() {
+        return new ArrayList<>(Arrays.asList(UPRIGHT, UPLEFT, DOWNRIGHT, DOWNLEFT));
     }
 }

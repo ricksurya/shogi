@@ -21,7 +21,7 @@ public class BoardTest {
     Player upper;
 
     @Before
-    public void init() {
+    public void init() throws Exception {
         b = new Board();
         Controller c = new Controller(new Reporter());
         lower = new Player(PlayerType.LOWER, c);

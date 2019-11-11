@@ -10,6 +10,7 @@ import static board.Direction.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Class that represents the Drive (King)
@@ -17,8 +18,7 @@ import java.util.Arrays;
  */
 public class Drive extends Piece {
     public Drive(Square sq, Player player) {
-        super(sq, player, PieceType.DRIVE, new ArrayList<>(Arrays.asList(UP, DOWN, LEFT, RIGHT, UPRIGHT,
-                UPLEFT, DOWNRIGHT, DOWNLEFT)), 1);
+        super(sq, player, PieceType.DRIVE, 1);
     }
 
     @Override
@@ -27,7 +27,8 @@ public class Drive extends Piece {
     }
 
     public static boolean isLegalDriveMove(Move move) {
-        ArrayList<Direction> driveDir = new ArrayList<>(Arrays.asList(UP, DOWN, LEFT, RIGHT, UPRIGHT, UPLEFT, DOWNRIGHT, DOWNLEFT));
+        List<Direction> driveDir = new ArrayList<>(Arrays.asList(UP, DOWN, LEFT, RIGHT, UPRIGHT,
+                UPLEFT, DOWNRIGHT, DOWNLEFT));
         Direction moveDir = move.getFrom().direction(move.getTo());
         int dx = Math.abs(move.getTo().col() - move.getFrom().col());
         int dy = Math.abs(move.getTo().row() - move.getFrom().row());
@@ -37,4 +38,8 @@ public class Drive extends Piece {
         return false;
     }
 
+    @Override
+    public List<Direction> getPieceDir() {
+        return new ArrayList<>(Arrays.asList(UP, DOWN, LEFT, RIGHT, UPRIGHT, UPLEFT, DOWNRIGHT, DOWNLEFT));
+    }
 }

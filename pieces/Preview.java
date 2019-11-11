@@ -12,13 +12,22 @@ import java.util.Arrays;
 import java.util.List;
 
 import static board.Direction.*;
-import static board.Direction.UPRIGHT;
 
+/**
+ * Class that represents a Preview piece in Shogi.
+ * @author ricksurya
+ */
 public class Preview extends Piece {
     public Preview(Square sq, Player player) {
         super(sq, player, PieceType.PREVIEW, 1);
     }
 
+    /**
+     * For the piece, we must check whether it is promoted. If it is promoted it can move like a Shield piece.
+     * @param move : move to be checked
+     * @param board : the board of the game
+     * @return : true if a valid Preview move
+     */
     @Override
     public boolean isLegalPieceMove(Move move, Board board) {
         Square from = move.getFrom();
@@ -33,12 +42,21 @@ public class Preview extends Piece {
         return false;
     }
 
+    /**
+     * The function to check whether a drop is legal for the Preview is more interesting. We must check that the drop
+     * does not result in an immediate checkmate against the owner's opponent, and that we are not dropping it on a
+     * column with another Preview with the same owner.
+     * @param to : destination
+     * @param board : the board of the game
+     * @return : true if a valid Preview drop
+     */
     @Override
     public boolean isLegalDrop(Square to, Board board) {
         if (to.row() == getPlayer().getPromotionRow() || board.getPieceAt(to) != null) {
             return false;
         }
 
+        // Check if another Preview with the same owner lies on the same column.
         Player player = getPlayer();
         for (int row = 0; row < Board.getBoardSize(); row++) {
             Piece p = board.getPieceAt(Square.sq(to.col(), row));
@@ -46,7 +64,7 @@ public class Preview extends Piece {
                 return false;
             }
         }
-
+        // Check that it doesn't result in a checkmate.
         board.placePieceAt(this, to);
         updateLocation(to);
         getPlayer().addCurrPiece(this);
@@ -57,6 +75,11 @@ public class Preview extends Piece {
         return res;
     }
 
+    /**
+     * The preview can only move UP relative to it's starting position. That means of player UPPER it can only move
+     * DOWN, and for LOWER it can only move UP.
+     * @return : list of directions in which the Preview can move in.
+     */
     @Override
     public List<Direction> getPieceDir() {
         ArrayList<Direction> previewDir;

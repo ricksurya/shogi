@@ -15,13 +15,24 @@ import static game.PlayerType.UPPER;
  * @author ricksurya
  */
 public abstract class Piece {
-
+    /** The player that owns the piece. */
     private Player owner;
+    /** The type of the piece, ex: Drive. */
     private PieceType type;
+    /** True if the piece is promoted, false otherwise. */
     private boolean promoted;
+    /** The number of squares in which the piece can move. */
     private int pieceRange;
+    /** The location of the piece on the game. */
     private Square location;
 
+    /**
+     * Constructor for a piece.
+     * @param sq : the location of the piece on the board
+     * @param player : the player that owns the piece
+     * @param type : type of the piece
+     * @param pieceRange : how many squares the piece can move
+     */
     public Piece(Square sq, Player player, PieceType type, int pieceRange) {
         this.pieceRange = pieceRange;
         owner = player;
@@ -30,10 +41,21 @@ public abstract class Piece {
         location = sq;
     }
 
+    /**
+     * Updating the location of the piece
+     * @param to : new location
+     */
     public final void updateLocation(Square to) {
         location = to;
     }
 
+    /**
+     * Returns true if the give move is a valid one, given the piece's capabilities and restrictions on the current
+     * board. The board is an input because for some pieces, we must check whether it is skipping over other pieces.
+     * @param move : move to be checked
+     * @param board : the board of the game
+     * @return : true if a valid move
+     */
     public boolean isLegalPieceMove(Move move, Board board) {
         Direction moveDir = move.getFrom().direction(move.getTo());
         int dx = Math.abs(move.getTo().col() - move.getFrom().col());
@@ -44,13 +66,17 @@ public abstract class Piece {
         return false;
     }
 
+    /**
+     * The piece is captured by another player. Hence, we must remove promotions and change the owner.
+     * @param p : the player that captured the piece
+     */
     public final void capture(Player p) {
         owner = p;
         demote();
     }
 
     /**
-     * Returns a set of valid moves for the piece, given the board and its current location.
+     * Returns a set of all valid moves for the piece, given the board and its current location.
      * @param board : board for the piece to check valid moves
      * @return : set of valid moves.
      */
@@ -68,10 +94,15 @@ public abstract class Piece {
         return validMoves;
     }
 
+    /** Promoting the piece. */
     public void promote() {
         promoted = true;
     }
 
+    /** A function to check whether it is legal to promote the piece given square to.
+     * @param to : the destination of the square where we check if it's legal to promote
+     * @return : true if valid promotion
+     */
     public boolean isLegalPromote(Square to) {
         if (!promoted && to.row() == owner.getPromotionRow()) {
             return true;
@@ -79,12 +110,24 @@ public abstract class Piece {
         return false;
     }
 
+    /**
+     * A function to check whether it is legal to drop the piece at to.
+     * @param to : destination
+     * @param board : the board of the game
+     * @return : true if it is legal by the piece definitions.
+     */
     public boolean isLegalDrop(Square to, Board board) {
         return true;
     }
 
+    /** Remove promotion of the piece. */
     public void demote() {
         promoted = false;
+    }
+
+    /** Returns a list of directions in which the piece can move in. */
+    public List<Direction> getPieceDir() {
+        return Collections.emptyList();
     }
 
     public final Player getPlayer() {
@@ -93,10 +136,6 @@ public abstract class Piece {
 
     public final Square getLocation() {
         return location;
-    }
-
-    public List<Direction> getPieceDir() {
-        return Collections.emptyList();
     }
 
     public int getPieceRange() {

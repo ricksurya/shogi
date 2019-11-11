@@ -13,11 +13,21 @@ import java.util.List;
 
 import static board.Direction.*;
 
+/**
+ * Class that represents a Relay piece in Shogi.
+ * @author ricksurya
+ */
 public class Relay extends Piece{
     public Relay(Square sq, Player player) {
         super(sq, player, PieceType.RELAY, 1);
     }
 
+    /**
+     * A valid move for the relay is in it's given directions, or a Shield move if it is promoted.
+     * @param move : move to be checked
+     * @param board : the board of the game
+     * @return : true if the move is valid
+     */
     @Override
     public boolean isLegalPieceMove(Move move, Board board) {
         Square from = move.getFrom();
@@ -34,6 +44,11 @@ public class Relay extends Piece{
         return false;
     }
 
+    /**
+     * The Relay piece can only move to front directions, but not horizontally or backward. This, like the Preview piece,
+     * is relative to it's starting position.
+     * @return
+     */
     @Override
     public List<Direction> getPieceDir() {
         ArrayList<Direction> relayDir;

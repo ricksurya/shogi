@@ -1,6 +1,5 @@
 package pieces;
 
-import board.Board;
 import board.Direction;
 import board.Move;
 import board.Square;
@@ -13,7 +12,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Class that represents the Drive (King)
+ * Class that represents the Drive (King) in Shogi.
  * @author ricksurya
  */
 public class Drive extends Piece {
@@ -26,6 +25,12 @@ public class Drive extends Piece {
         return false;
     }
 
+    /**
+     * The drive can move in all directions but only by 1 square. This is a static function that helps check whether the
+     * move is legal or not, to be used by promoted pieces that can move like the Drive.
+     * @param move : move to be checked
+     * @return : true if a valid Drive move
+     */
     public static boolean isLegalDriveMove(Move move) {
         List<Direction> driveDir = new ArrayList<>(Arrays.asList(UP, DOWN, LEFT, RIGHT, UPRIGHT,
                 UPLEFT, DOWNRIGHT, DOWNLEFT));
@@ -38,6 +43,10 @@ public class Drive extends Piece {
         return false;
     }
 
+    /**
+     * The drive can move in all directions.
+     * @return : list of directions the drive can move in
+     */
     @Override
     public List<Direction> getPieceDir() {
         return new ArrayList<>(Arrays.asList(UP, DOWN, LEFT, RIGHT, UPRIGHT, UPLEFT, DOWNRIGHT, DOWNLEFT));

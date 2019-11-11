@@ -1,6 +1,5 @@
 package pieces;
 
-import board.Board;
 import board.Direction;
 import board.Move;
 import board.Square;
@@ -18,11 +17,13 @@ public class Shield extends Piece {
         super(sq, player, PieceType.SHIELD, 1);
     }
 
+    /** The Shield piece cannot be promoted. */
     @Override
     public boolean isLegalPromote(Square to) {
         return false;
     }
 
+    /** A static method that helps other pieces determine whether the move is a valid Shield move. */
     public static boolean isLegalShieldMove(Move move, Player player) {
         ArrayList<Direction> shieldDir;
         if (player.getPlayerType() == PlayerType.LOWER) {
@@ -39,6 +40,10 @@ public class Shield extends Piece {
         return false;
     }
 
+    /**
+     * The Shield cannot move backwards diagonally, relative to its starting position.
+     * @return : the list of valid Shield directions.
+     */
     @Override
     public List<Direction> getPieceDir() {
         ArrayList<Direction> shieldDir;

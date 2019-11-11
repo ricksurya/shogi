@@ -12,13 +12,23 @@ import java.util.Scanner;
 import static game.Utils.*;
 
 public class Controller {
+    /** The number of maximum moves/drops that can be executed. The game ends at a tie if there is no winner in this
+     * amount of moves.
+     */
     private static final int MOVE_LIMIT = 200;
+    /** The default file for initializing an interactive mode game. */
     private static final String defaultPath = "game/DEFAULT.in";
+    /** A counter for the number of moves that has been executed. */
     private int moveCount;
+    /** The unique reporter for this controller. */
     private final Reporter _reporter;
+    /** The lower player of the board. */
     private final Player lowerPlayer;
+    /** The upper player of the board. */
     private final Player upperPlayer;
+    /** The board to be played in. */
     private Board _board;
+    /** The list of moves to be executed, for a file mode game. */
     private List<String> moves;
 
 

@@ -1,5 +1,5 @@
 # BoxShogi Assignment
-Box take home challenge - hi! Here's my rendition on designing the box MiniShogi game. Below, I'll be explaining how I 
+Hi! Here's my rendition on designing the MiniShogi game. Below, I'll be explaining how I 
 designed the game, why I chose my design, and finally some possible improvements!
 # Structure
 There are three packages for this project: `board`, `game`, and `pieces`. 
@@ -44,4 +44,5 @@ To run the game in filemode, run:
 ```
 java game/Main.java -f <filepath>.in
 ```
-Remember to be in the box-take-home directory when you are running the commands :)
+Remember to be in the 
+-take-home directory when you are running the commands :)

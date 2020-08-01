@@ -44,5 +44,3 @@ To run the game in filemode, run:
 ```
 java game/Main.java -f <filepath>.in
 ```
-Remember to be in the 
--take-home directory when you are running the commands :)
